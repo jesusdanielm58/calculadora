@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>calculadora</title>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+	<style type="text/css">
+		*{
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+		}
+		html{
+			height: 100%;
+		}
+		body{
+			background: linear-gradient(#90218C, #009890);
+			background-repeat: no-repeat;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+		}
+		button{
+			height: 40px;
+			border:3px solid grey;
+			font-weight: bold;
+			outline: none;
+		}
+		button:active{
+			opacity: 0.9;
+		}
+		.grid{
+			width: 300px;
+			margin: 0 auto;
+			display: grid;
+			grid-template-columns:1fr 1fr 1fr 1fr;
+			background-color: grey;
+			grid-gap: 7px;
+			padding: 50px 30px 30px 30px;
+			border-radius: 10px;
+			border:5px solid rgba(0,0,0,0.5);
+		}
+		.title{
+			grid-column-start: 4;
+		}
+		.long{
+			grid-column: span 2;
+			background-color: #ffa620; 
+		}
+		input{
+			width: 100%;
+			grid-column: 1/ span 4;
+			height: 40px;
+			text-align: right;
+			padding-right: 10px;
+			background-color: #d0e6a8;
+			border:none; 
+			outline: none;
+			margin-bottom: 30px;
+		}
+	</style>
+</head>
+<body>
+	<div id="app">
+		<div class="grid">	
+			<p class="title"><i>mierdy</i></p>
+			<input type="text" name="entrada" v-model=pantalla placeholder="0">
+			<button v-on:click="cambiarsigno">+/-</button>
+			<button v-on:click="clear">CE</button>
+			<button v-on:click="borrar">⌫</button>
+			<button v-on:click="operar('+')">+</button>
+			<button v-on:click="numero('7')">7</button>
+			<button v-on:click="numero('8')">8</button>
+			<button v-on:click="numero('9')">9</button>
+			<button v-on:click="operar('-')">-</button>
+			<button v-on:click="numero('4')">4</button>
+			<button v-on:click="numero('5')">5</button>
+			<button v-on:click="numero('6')">6</button>
+			<button v-on:click="operar('*')">x</button>
+			<button v-on:click="numero('1')">1</button>
+			<button v-on:click="numero('2')">2</button>
+			<button v-on:click="numero('3')">3</button>
+			<button v-on:click="operar('/')">/</button>
+			<button v-on:click="decimal">,</button>
+			<button v-on:click="numero('0')">0</button>
+			<button v-on:click="igual" class="long">=</button>
+		</div>
+	</div>
+	<script type="text/javascript">
+		new Vue({
+			el:"#app",
+			data:{
+				pantalla:"",
+				anterior:["",""],
+				result:false
+			},
+			methods:{
+				operar:function(operador){
+					if (this.pantalla.length>0) {
+						this.anterior[1]=operador;
+						if (this.anterior[0]=="") {
+							this.anterior[0]=this.pantalla;
+							this.pantalla="";
+						}else{
+							this.igual();
+						}
+					}
+				},
+				cambiarsigno:function(){
+					if(this.pantalla){this.pantalla=String(this.pantalla*-1);}	
+				},
+				clear:function(){
+					this.pantalla="";
+					this.anterior=["",""];
+				},
+				numero:function(num){
+					if (num!=0||this.pantalla.length>0){
+						if (this.result==true) {
+							this.pantalla="";
+							this.result=false;
+						}
+						this.pantalla+=num;
+					}
+				},
+				decimal:function(){
+					if (this.pantalla==="") {
+						this.pantalla="0."
+					}else if(!this.pantalla.includes(".")){
+						this.pantalla+="."
+					}
+				},
+				igual:function(){
+					if(this.anterior[1]==="+"){
+						this.pantalla=String(Number(this.anterior[0])+Number(this.pantalla));
+					}else if(this.anterior[1]==="-"){
+						this.pantalla=String(Number(this.anterior[0])-Number(this.pantalla));
+					}else if(this.anterior[1]==="*"){
+						this.pantalla=String(Number(this.anterior[0])*Number(this.pantalla));
+					}else if(this.anterior[1]==="/"){
+						this.pantalla=String(Number(this.anterior[0])/Number(this.pantalla));
+					}
+					this.result=true;
+					this.anterior=["",""]
+				},
+				borrar:function(){
+					if (this.result==true) {
+						this.pantalla="";
+						this.result=false;
+					}
+					else if(this.pantalla.length>0) {
+						this.pantalla=String(this.pantalla).substr(0,this.pantalla.length-1);
+					}
+				}
+			}
+		})
+	</script>
+</body>
+</html>
